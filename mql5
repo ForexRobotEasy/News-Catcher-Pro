@@ -1,0 +1,66 @@
+
+// Program: News Catcher Pro
+// Developer's site: forexroboteasy.com
+// Development: Forex Robot Easy Team
+
+#include <Trade\Trade.mqh>
+#include <Trade\PositionInfo.mqh>
+#include <Trade\SymbolInfo.mqh>
+#include <Trade\TradeRequest.mqh>
+
+// Function to identify intraday seasonal volatility patterns caused by high-impact news events
+bool identifyVolatilityPatterns(const datetime eventTime)
+{
+    // Implement logic to identify volatility patterns
+    return true;
+}
+
+// Function to enter the market based on identified timeframes
+void enterMarket(const string symbol, const ENUM_TIMEFRAMES timeframe)
+{
+    // Implement logic to enter the market
+    Print('Entering the market on', SymbolInfoString(symbol, SYMBOL_TIMEZONE), 'using', EnumToString(timeframe), 'timeframe');
+}
+
+// Main function
+void OnTick()
+{
+    const string[] currencyPairs = {'GBPUSD', 'EURUSD', 'EURGBP'};
+    const ENUM_TIMEFRAMES optimalTimeframe = PERIOD_M5;
+
+    for (int i = 0; i < ArraySize(currencyPairs); i++)
+    {
+        const string symbol = currencyPairs[i];
+
+        // Check if the symbol is allowed
+        if (!SymbolInfoInteger(symbol, SYMBOL_SELECT))
+        {
+            Print('Symbol', symbol, 'is not allowed');
+            continue;
+        }
+
+        // Get the next high-impact news event
+        const datetime nextEventTime = NewsNextTime(symbol, 1, NEWS_HIGH_IMPORTANCE);
+        
+        // Check if there is a high-impact news event
+        if (nextEventTime != 0)
+        {
+            // Check if the current time is shortly before the event
+            if (TimeCurrent() >= nextEventTime - 3600)
+            {
+                // Identify volatility patterns
+                if (identifyVolatilityPatterns(nextEventTime))
+                {
+                    // Enter the market
+                    enterMarket(symbol, optimalTimeframe);
+                }
+            }
+        }
+    }
+}
+
+// MT5 version
+void OnTick_MT5()
+{
+    OnTick();
+}
